@@ -1,0 +1,26 @@
+# Generated Python API docs (spec 2.12) — mkdocs + mkdocstrings against the
+# orchestration layer, distinct from the Wiki (theory) and `cargo doc` (Rust core).
+site_name: akribia API reference
+site_description: Python orchestration layer API (profiles, tasks, viz, validation)
+theme:
+  name: material
+  palette:
+    primary: blue
+nav:
+  - Home: index.md
+  - Theory: THEORY.md
+  - Limitations: LIMITATIONS.md
+  - Architecture: architecture.md
+  - Benchmarks: BENCHMARKS.md
+  - Glossary: GLOSSARY.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences

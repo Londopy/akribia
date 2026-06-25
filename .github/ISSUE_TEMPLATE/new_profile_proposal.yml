@@ -1,0 +1,27 @@
+name: New profile proposal
+description: Propose a new condition/mechanism profile (the project's extension point)
+labels: ["profile-proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: >
+        This template encodes the project's rigor bar (spec 8). A profile without a
+        literature basis and a demonstrating task won't be merged.
+  - type: textarea
+    id: mechanism
+    attributes:
+      label: What condition / mechanism does this model?
+      description: Which of the six levers does it perturb, in which direction, and why?
+    validations: { required: true }
+  - type: textarea
+    id: literature
+    attributes:
+      label: What literature supports the parameterization?
+      description: Cite specific papers (added to docs/references.bib).
+    validations: { required: true }
+  - type: textarea
+    id: task
+    attributes:
+      label: What task would demonstrate it, and what is the pre-registered prediction?
+      description: The prediction must be committable *before* running it (spec 1.5.2).
+    validations: { required: true }

@@ -1,0 +1,50 @@
+# Rust
+/target/
+**/*.rs.bk
+# NOTE: Cargo.lock is intentionally committed (see docs/architecture.md lockfile
+# policy). This project ships binaries (GUI, validation CLI) where pinned,
+# reproducible dependency versions are exactly what we want.
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+build/
+dist/
+*.so
+*.pyd
+
+# Generated task results / run artifacts
+results/
+*.run.json
+
+# Node / GUI
+gui/node_modules/
+gui/dist/
+gui/src-tauri/target/
+
+# Generated docs
+site/
+core/target/doc/
+
+# Build artifacts and local scratch
+*.log
+.DS_Store
+SESSION_LOG.md       # per spec 4 — local scratch, never committed
+
+# IDE
+.vscode/*
+!.vscode/extensions.json   # ok to keep shared editor recommendations
+.idea/
+
+# Test caches
+.hypothesis/
+.benchmarks/

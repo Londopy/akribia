@@ -1,0 +1,96 @@
+# akribia — mixed Rust/Python project.
+#
+# Layout decision (recorded in docs/architecture.md ADR-009): the spec's
+# architecture tree lists profiles/, tasks/, viz/, validation/ at the repo root,
+# but the §0.1 quickstart invokes `python -m akribia.tasks.illusion_task`, which
+# requires an importable `akribia` package. We reconcile the two by making
+# `akribia/` the Python import package that contains those modules, while the
+# Rust crate lives in `core/` and is compiled into `akribia._core`. The Python
+# layer transparently falls back to a pure-Python reference core when the
+# compiled extension is not present, so the project is runnable with or without
+# a Rust toolchain.
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "akribia"
+version = "0.1.0"
+description = "A unified computational model of precision-weighted Bayesian inference across autism, ADHD, and PPCS."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Londopy" }]
+keywords = [
+    "computational-psychiatry",
+    "predictive-coding",
+    "bayesian-inference",
+    "autism",
+    "adhd",
+    "post-concussion-syndrome",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Rust",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+    "jsonschema>=4.0",
+]
+
+[project.optional-dependencies]
+viz = ["plotly>=5.0"]
+notebooks = ["jupyter>=1.0", "ipykernel>=6.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-benchmark>=4.0",
+    "hypothesis>=6.0",
+    "ruff>=0.5",
+    "mypy>=1.8",
+    "pip-audit>=2.6",
+    "pre-commit>=3.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/Londopy/akribia"
+Repository = "https://github.com/Londopy/akribia"
+Documentation = "https://github.com/Londopy/akribia/wiki"
+
+[project.scripts]
+akribia = "akribia.cli:main"
+
+[tool.maturin]
+# Build the Rust core (core/Cargo.toml) into akribia._core, and ship the pure
+# Python package alongside it. python-source = "." keeps the `akribia/` package
+# at the repo root.
+manifest-path = "core/Cargo.toml"
+module-name = "akribia._core"
+python-source = "."
+features = ["python"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["gui", "notebooks"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "NPY", "RUF"]
+ignore = ["E501", "E702", "RUF001", "RUF002", "RUF003", "UP017"]  # E501/E702 style; RUF00x allow scientific unicode (γ, −); UP017 keep tz.utc for 3.10 fallback
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+warn_redundant_casts = true
+ignore_missing_imports = true
+exclude = ["gui/", "notebooks/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -q"
+filterwarnings = ["error::DeprecationWarning"]

@@ -1,0 +1,7 @@
+# Single source of truth for the Rust toolchain version (spec 2.1.2).
+# rustup and cargo read this automatically, so the correct compiler installs
+# itself even for someone running outside the devcontainer. Keep this in sync
+# with .devcontainer/Dockerfile and the CI workflow matrices.
+[toolchain]
+channel = "1.78.0"
+components = ["rustfmt", "clippy"]

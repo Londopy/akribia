@@ -1,0 +1,19 @@
+{
+  "name": "akribia",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rust-lang.rust-analyzer",
+        "ms-python.python",
+        "charliermarsh.ruff",
+        "tamasfe.even-better-toml"
+      ]
+    }
+  },
+  "postCreateCommand": "maturin develop && pre-commit install || true",
+  "remoteUser": "root"
+}

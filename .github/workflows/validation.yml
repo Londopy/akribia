@@ -1,0 +1,45 @@
+name: validation
+on:
+  schedule: [{ cron: "0 6 * * 1" }]        # weekly (spec 2.8)
+  push: { paths: ["core/src/hgf.rs", "core/src/td_learning.rs", "akribia/validation/**"] }
+  workflow_dispatch: {}
+jobs:
+  recovery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - uses: dtolnay/rust-toolchain@1.78.0
+      - uses: Swatinem/rust-cache@v2
+      - name: install
+        run: |
+          python -m pip install --upgrade pip maturin
+          pip install -e ".[dev]"
+          maturin develop --release
+      - name: reference-oracle comparison
+        run: python -m akribia.validation.against_hgf_toolbox
+      - name: parameter recovery (per-parameter; gate on reliably-recoverable only)
+        run: |
+          python - <<'PY'
+          import json, sys
+          from akribia.validation.parameter_recovery import run_suite
+          report = run_suite(n_seeds=20)
+          print(json.dumps(report, indent=2))
+          with open("recovery_report.json", "w") as f:
+              json.dump(report, f, indent=2)
+          # Fail the build if the CI gate (defined only on reliably-recoverable
+          # parameters, spec 2.6) does not pass.
+          sys.exit(0 if report["ci_gate_pass"] else 1)
+          PY
+      - name: publish recovery report artifact
+        uses: actions/upload-artifact@v4
+        with: { name: parameter-recovery-report, path: recovery_report.json }
+  benches:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.78.0
+      - uses: Swatinem/rust-cache@v2
+      - name: criterion benches (not run on the fast PR loop — spec 2.15)
+        run: cargo bench -p akribia-core

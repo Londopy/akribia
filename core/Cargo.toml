@@ -1,0 +1,41 @@
+[package]
+name = "akribia-core"
+description = "The akribia inference engine: precision-weighted Bayesian / predictive-coding math (Kalman, HGF, TD learning, forward model)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+name = "akribia_core"
+# rlib so gui/src-tauri can link the crate directly; cdylib for the PyO3
+# extension module consumed by the Python layer.
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+rand = "0.8"
+rand_chacha = "0.3"          # explicit, seedable RNG — never ambient (spec 2.6.1)
+rand_distr = "0.4"           # Gaussian sampling for RPE / injury noise
+thiserror = "1.0"
+tracing = "0.1"              # structured logging across the boundary (spec 2.13)
+pyo3 = { version = "0.21", features = ["extension-module"], optional = true }
+
+[features]
+default = []
+# Enable to build the Python extension. maturin passes --features pyo3/extension-module.
+python = ["dep:pyo3"]
+
+[dev-dependencies]
+proptest = "1.4"            # property-based tests (spec 2.5.1)
+approx = "0.5"
+criterion = "0.5"          # Rust microbenchmarks (spec 2.10)
+rand_chacha = "0.3"
+
+[[bench]]
+name = "kalman_bench"
+harness = false
+
+[[bench]]
+name = "sweep_bench"
+harness = false

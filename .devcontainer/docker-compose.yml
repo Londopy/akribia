@@ -1,0 +1,14 @@
+# Optional compose file (spec 2.7) — only meaningful once a viz/dashboard
+# service is added. The default quickstart uses the devcontainer/Dockerfile
+# directly; this exists so `docker compose -f .devcontainer/docker-compose.yml up`
+# from the README quickstart has something to run.
+services:
+  akribia:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+    command: tail -f /dev/null
+    tty: true

@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: akribia
+message: "If you use this software, please cite it as below."
+authors:
+  - alias: "Londopy"
+type: software
+license: MIT
+repository-code: "https://github.com/Londopy/akribia"
+abstract: >-
+  A unified computational model of precision-weighted Bayesian inference across
+  autism, ADHD, and PPCS. One predictive-coding engine with pluggable precision
+  miscalibration profiles, plus a literature-grounded comorbidity (AuDHD) mode.
+  A research/replication tool, not a diagnostic instrument.
+keywords:
+  - computational-psychiatry
+  - predictive-coding
+  - bayesian-inference
+  - autism
+  - adhd
+  - post-concussion-syndrome
+version: 0.1.0
+date-released: "2026-06-24"

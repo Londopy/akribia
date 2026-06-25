@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/Londopy/akribia/schemas/task_result.json",
+  "title": "AkribiaTaskResult",
+  "description": "Shared output schema for every task in tasks/. profiles/, validation/, viz/, and the GUI's tauri-bridge.ts all read this shape. One schema, many consumers, zero ad-hoc parsing (spec 2.1.1).",
+  "type": "object",
+  "required": ["timestamp", "profile", "task", "parameters", "trajectory", "summary"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC time the result was produced."
+    },
+    "profile": {
+      "type": "string",
+      "description": "Name of the PrecisionProfile used (e.g. 'baseline', 'autism_weak_prior')."
+    },
+    "task": {
+      "type": "string",
+      "description": "Name of the task that produced this result."
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Flat dump of the PrecisionProfile fields plus any task-specific parameters."
+    },
+    "seed": {
+      "type": "integer",
+      "description": "Deterministic seed used for this run (spec 2.6.1). Required for any run that touches randomness."
+    },
+    "trajectory": {
+      "type": "array",
+      "description": "Per-timestep record of the inference dynamics. May be empty for tasks whose output is purely a summary.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "t": { "type": "number" },
+          "prediction": { "type": "number" },
+          "observation": { "type": "number" },
+          "precision": { "type": "number" },
+          "prediction_error": { "type": "number" }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "description": "Task-specific scalar summary metrics (the per-task units the §2.4 ablation methodology compares within)."
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,24 @@
+[workspace]
+# Root workspace contains only `core`, pinned to Rust 1.78 (rust-toolchain.toml)
+# to preserve the numerical core's reproducibility guarantee. `gui/src-tauri` is a
+# SEPARATE workspace (it path-depends on core and builds under current stable for
+# Tauri 2 compatibility) — see ADR-010 in docs/architecture.md.
+members = ["core"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Londopy"]
+repository = "https://github.com/Londopy/akribia"
+
+# Profiles applied across all workspace members.
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+
+[profile.bench]
+opt-level = 3
+lto = "thin"
