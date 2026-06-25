@@ -1,9 +1,7 @@
 # akribia
 ### A unified computational model of precision-weighted Bayesian inference across autism, ADHD, and PPCS
 
-[![rust](https://github.com/Londopy/akribia/actions/workflows/rust.yml/badge.svg)](https://github.com/Londopy/akribia/actions/workflows/rust.yml)
-[![python](https://github.com/Londopy/akribia/actions/workflows/python.yml/badge.svg)](https://github.com/Londopy/akribia/actions/workflows/python.yml)
-[![validation](https://github.com/Londopy/akribia/actions/workflows/validation.yml/badge.svg)](https://github.com/Londopy/akribia/actions/workflows/validation.yml)
+[![ci](https://github.com/Londopy/akribia/actions/workflows/ci.yml/badge.svg)](https://github.com/Londopy/akribia/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 ***One inference engine. Three miscalibrations. Same math.***
