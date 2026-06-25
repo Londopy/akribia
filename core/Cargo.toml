@@ -29,7 +29,7 @@ python = ["dep:pyo3"]
 [dev-dependencies]
 proptest = "1.4"            # property-based tests (spec 2.5.1)
 approx = "0.5"
-criterion = "0.5"          # Rust microbenchmarks (spec 2.10)
+criterion = "0.8"          # Rust microbenchmarks (spec 2.10)
 rand_chacha = "0.3"
 
 [[bench]]
