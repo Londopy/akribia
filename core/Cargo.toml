@@ -14,7 +14,7 @@ name = "akribia_core"
 crate-type = ["rlib", "cdylib"]
 
 [dependencies]
-rand = "0.8"
+rand = "0.10"
 rand_chacha = "0.3"          # explicit, seedable RNG — never ambient (spec 2.6.1)
 rand_distr = "0.4"           # Gaussian sampling for RPE / injury noise
 thiserror = "1.0"
