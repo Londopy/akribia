@@ -6,6 +6,8 @@
 
 ***One inference engine. Three miscalibrations. Same math.***
 
+**▶ [Try the live demo](https://londopy.github.io/akribia/)** — the full dashboard runs in your browser, no install. · **[⬇ Download the desktop app](https://github.com/Londopy/akribia/releases)**
+
 > ### This is not a diagnostic tool
 > akribia is a computational-psychiatry **research replication and exploration**
 > tool. It implements published mathematical models of precision-weighted Bayesian
@@ -21,6 +23,10 @@
 > store, transmit, or process any personal, behavioral, or health information.
 
 ## Desktop app — the interactive explorer
+
+[![akribia dashboard](docs/assets/app-preview.png)](https://londopy.github.io/akribia/)
+
+*The dark dashboard — baseline vs. a comorbid profile across all five tasks. [Open it live](https://londopy.github.io/akribia/) and drag the precision sliders.*
 
 akribia ships a rich, dark, **interactive desktop app** (Tauri + React + Tailwind):
 pick a profile in the sidebar, drag a precision lever, and watch every task's
