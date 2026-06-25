@@ -73,6 +73,9 @@ manifest-path = "core/Cargo.toml"
 module-name = "akribia._core"
 python-source = "."
 features = ["python"]
+# Pack LICENSE + README into the sdist so the License-File metadata PyPI
+# validates actually exists in the tarball (else PyPI 400s on upload).
+include = ["LICENSE", "README.md"]
 
 [tool.ruff]
 line-length = 100
