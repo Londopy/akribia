@@ -1,8 +1,8 @@
 name: release
 
-# Tag-triggered desktop installers (spec 11.5). Builds the Tauri app on each OS
-# and attaches the installers (.msi/.exe, .dmg, .AppImage/.deb) to a GitHub
-# Release. Installers are UNSIGNED — the release notes link the override steps.
+# Tag-triggered desktop installers (spec 11.5). Builds the Tauri app on each OS,
+# attaches installers to a GitHub Release with a full writeup, and publishes a
+# SHA256SUMS.txt so downloads can be verified (spec 2.16).
 on:
   push:
     tags: ["v*"]
@@ -15,7 +15,7 @@ concurrency:
 jobs:
   build:
     permissions:
-      contents: write          # needed to create the Release and upload assets
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -53,7 +53,7 @@ jobs:
         run: npm ci
         working-directory: gui
 
-      - name: Build app + create release
+      - name: Build app + create/update release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -61,13 +61,64 @@ jobs:
           projectPath: gui
           tagName: ${{ github.ref_name }}
           releaseName: "akribia ${{ github.ref_name }}"
-          releaseBody: |
-            Desktop installers for akribia.
-
-            **Installers are unsigned.** macOS: right-click the app → Open (or
-            `xattr -d com.apple.quarantine <file>`). Windows: "More info" → "Run
-            anyway" on the SmartScreen prompt.
-
-            akribia is a research/educational tool, not a diagnostic instrument.
           releaseDraft: false
           prerelease: false
+          releaseBody: |
+            ## akribia — interactive desktop app
+
+            **One inference engine. Three miscalibrations. Same math.**
+
+            akribia is an interactive explorer for precision-weighted Bayesian
+            inference. Pick a profile — autism (weak-prior or HIPPEA), ADHD
+            (discounting or unstable gain), PPCS, or a comorbid / AuDHD mode —
+            drag a precision lever, and watch five simulated tasks change in real
+            time against a neurotypical baseline, all computed by the same Rust
+            core. **A research/educational tool — _not_ a diagnostic instrument.**
+            It runs entirely on synthetic data and collects nothing.
+
+            ### Download & install
+
+            | OS | File | How to run |
+            |----|------|-----------|
+            | **Windows** | `akribia_*_x64-setup.exe` or `…_x64_en-US.msi` | Double-click. On the SmartScreen prompt: **More info → Run anyway**. |
+            | **macOS** | `akribia_*.dmg` | Open, drag to Applications. First launch: **right-click → Open** (or `xattr -d com.apple.quarantine akribia.app`). |
+            | **Linux** | `akribia_*.AppImage` (or `.deb`) | `chmod +x akribia_*.AppImage && ./akribia_*.AppImage` |
+
+            ### Verify your download (optional but recommended)
+
+            Every asset's SHA-256 hash is in **`SHA256SUMS.txt`** (attached below).
+
+            - **macOS / Linux:** `sha256sum -c SHA256SUMS.txt`
+            - **Windows (PowerShell):** `Get-FileHash .\akribia_*.msi -Algorithm SHA256`
+              then compare against the line in `SHA256SUMS.txt`.
+
+            ### Notes
+
+            - **Installers are unsigned.** Code-signing certificates are a paid
+              add-on; the override steps above are expected and safe for an
+              open-source build you can read end to end.
+            - Prefer no install? Run from source: `cd gui && npm install && npm run tauri dev`.
+            - Source, full docs, and the Python research package are in the
+              [repository README](https://github.com/Londopy/akribia#readme).
+
+  # After all installers are built and uploaded, publish a single SHA256SUMS.txt
+  # covering every asset on the release (spec 2.16 integrity verification).
+  checksums:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all release assets, hash them, attach SHA256SUMS.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p dist && cd dist
+          gh release download "${{ github.ref_name }}" \
+            --repo "${{ github.repository }}" --pattern '*' || true
+          # Hash everything except a prior checksums file, then publish it.
+          rm -f SHA256SUMS.txt
+          sha256sum * > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+          gh release upload "${{ github.ref_name }}" SHA256SUMS.txt \
+            --repo "${{ github.repository }}" --clobber
