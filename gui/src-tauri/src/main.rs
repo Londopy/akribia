@@ -10,6 +10,8 @@ fn main() {
             commands::run_illusion,
             commands::run_volatility,
             commands::run_discounting,
+            commands::run_self_motion,
+            commands::run_perturbation,
         ])
         .run(tauri::generate_context!())
         .expect("error while running akribia GUI");

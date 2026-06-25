@@ -1,0 +1,6 @@
+{
+  "identifier": "default",
+  "description": "Default capability for the main window — allows the frontend to call the app's custom commands and use core window APIs.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

@@ -1,72 +1,68 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { RotateCcw } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TaskChart } from "@/components/TaskChart";
-import {
-  makeDebouncedRunner, runVolatility, type ProfileInfo,
-} from "@/lib/tauri-bridge";
+import { LEVERS, PROFILE_COLOR, type ProfileInfo } from "@/lib/profiles";
+import { cn } from "@/lib/utils";
+
+export type Levers = Record<string, number>;
 
 interface Props {
   profile: ProfileInfo;
-  onError: (msg: string) => void;
+  levers: Levers;
+  onChange: (key: string, value: number) => void;
+  onReset: () => void;
 }
 
-// Live parameter sliders (spec 11.2) — the highest-impact feature in the GUI.
-// Drag precision_flexibility and watch the volatility-learning belief curve update
-// in real time. Calls into Rust are debounced + request-ID guarded via
-// makeDebouncedRunner so dragging feels responsive, not broken.
-export function ParameterPanel({ profile, onError }: Props) {
-  const [flex, setFlex] = useState(profile.precision_flexibility);
-  const [curve, setCurve] = useState<number[]>([]);
-
-  // Reset slider when the selected profile changes.
-  useEffect(() => setFlex(profile.precision_flexibility), [profile]);
-
-  const runner = useMemo(
-    () => makeDebouncedRunner<number[]>(runVolatility, setCurve, onError, 200),
-    [onError]
-  );
-
-  // Fire on every (debounced) slider change and once on mount/profile change.
-  const firstRun = useRef(true);
-  useEffect(() => {
-    runner(flex);
-    firstRun.current = false;
-  }, [flex, runner]);
-
+// Live parameter sliders (spec 11.2). Active levers for the selected profile are
+// highlighted; dragging any of them updates the dashboard charts in real time.
+export function ParameterPanel({ profile, levers, onChange, onReset }: Props) {
+  const accent = PROFILE_COLOR[profile.name] ?? "var(--accent)";
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Live lever — precision_flexibility (HGF volatility)</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex items-center gap-4">
-            <Slider
-              value={[flex]}
-              min={0.02}
-              max={1.5}
-              step={0.01}
-              onValueChange={(v) => setFlex(v[0])}
-              className="flex-1"
-            />
-            <span className="w-16 text-right font-mono text-sm">{flex.toFixed(2)}</span>
-          </div>
-          <p className="text-xs text-slate-500">
-            Low flexibility (HIPPEA / autism_overfitting) cannot raise its learning
-            rate after the unsignalled switch at trial 50 — watch reconvergence slow.
-          </p>
-        </CardContent>
-      </Card>
+    <div className="rounded-2xl border border-border bg-panel p-5 shadow-card">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <div className="text-sm font-semibold">Levers</div>
+          <div className="text-xs text-muted">Drag to watch the model's behaviour change live.</div>
+        </div>
+        <button
+          onClick={onReset}
+          className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-xs text-muted transition hover:bg-panel-hover hover:text-ink"
+        >
+          <RotateCcw size={13} /> reset
+        </button>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Volatility-switching belief (live)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TaskChart data={curve} label="belief about arm-A reward prob." />
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {LEVERS.map((l) => {
+          const isActive = profile.active_levers.includes(l.key);
+          const val = levers[l.key];
+          const display =
+            l.nullable && val >= l.max ? "∞ (off)" : val.toFixed(2);
+          return (
+            <div
+              key={l.key}
+              className={cn(
+                "rounded-xl border p-3 transition",
+                isActive ? "border-transparent bg-panel-2 shadow-card" : "border-border/60 bg-transparent opacity-70",
+              )}
+              style={isActive ? { boxShadow: `inset 0 0 0 1px ${accent}55` } : undefined}
+            >
+              <div className="mb-2 flex items-baseline justify-between gap-2">
+                <span className="text-xs font-medium text-ink">{l.label}</span>
+                <span className="font-mono text-xs text-muted">{display}</span>
+              </div>
+              <Slider
+                value={[val]}
+                min={l.min}
+                max={l.max}
+                step={l.step}
+                accent={isActive ? accent : "#3a4560"}
+                onValueChange={(v) => onChange(l.key, v[0])}
+              />
+              <p className="mt-2 text-[10.5px] leading-snug text-muted">{l.blurb}</p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

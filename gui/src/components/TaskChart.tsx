@@ -1,27 +1,35 @@
-import {
-  Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid,
-} from "recharts";
+import * as React from "react";
+import { Card, CardContent, CardDesc, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Props {
-  data: number[];
-  label: string;
-  color?: string;
+  title: string;
+  desc: string;
+  metric?: { label: string; value: string; color?: string };
+  children: React.ReactNode;
+  delay?: number;
 }
 
-// Interactive in-app chart (spec 11.2) — recharts, lighter and idiomatic with
-// Tailwind. The comparison_grid.py dashboard reimagined as a live view.
-export function TaskChart({ data, label, color = "#0072B2" }: Props) {
-  const series = data.map((y, i) => ({ t: i, value: y }));
+// A single task panel: title, one-line explanation, a live metric chip, and a chart.
+export function TaskCard({ title, desc, metric, children, delay = 0 }: Props) {
   return (
-    <ResponsiveContainer width="100%" height={280}>
-      <LineChart data={series} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
-        <XAxis dataKey="t" tick={{ fontSize: 11 }} />
-        <YAxis tick={{ fontSize: 11 }} />
-        <Tooltip />
-        <Line type="monotone" dataKey="value" name={label} stroke={color}
-              dot={false} strokeWidth={2} isAnimationActive={false} />
-      </LineChart>
-    </ResponsiveContainer>
+    <Card className="animate-rise overflow-hidden" style={{ animationDelay: `${delay}ms` }}>
+      <CardHeader>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <CardTitle>{title}</CardTitle>
+            <CardDesc className="mt-1">{desc}</CardDesc>
+          </div>
+          {metric && (
+            <div className="shrink-0 rounded-lg border border-border bg-panel-2 px-2.5 py-1 text-right">
+              <div className="text-[9px] uppercase tracking-wider text-muted">{metric.label}</div>
+              <div className="font-mono text-sm font-semibold" style={{ color: metric.color ?? "var(--accent)" }}>
+                {metric.value}
+              </div>
+            </div>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
   );
 }

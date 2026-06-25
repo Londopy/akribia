@@ -1,0 +1,5 @@
+# The GUI builds with current stable Rust (Tauri 2 needs a newer toolchain than
+# the core's pinned 1.78). This file is found first when building inside
+# gui/src-tauri, overriding the repo-root rust-toolchain.toml. See ADR-010.
+[toolchain]
+channel = "stable"

@@ -53,3 +53,24 @@ jobs:
 
       - name: pytest
         run: pytest tests/ -q
+
+  # Fast frontend-only check for the GUI: type-checks and bundles the React app.
+  # Deliberately does NOT build the Tauri/Rust shell (that needs system libraries
+  # and is exercised by the tag-triggered release workflow), so this stays quick
+  # and reliable on every push.
+  gui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: gui/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: gui
+      - name: Type-check + build frontend
+        run: npm run build
+        working-directory: gui

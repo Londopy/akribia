@@ -48,3 +48,6 @@ SESSION_LOG.md       # per spec 4 — local scratch, never committed
 # Test caches
 .hypothesis/
 .benchmarks/
+
+# Vite temp files (locked on some mounts)
+gui/*.timestamp-*.mjs

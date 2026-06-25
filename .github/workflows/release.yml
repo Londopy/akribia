@@ -1,0 +1,73 @@
+name: release
+
+# Tag-triggered desktop installers (spec 11.5). Builds the Tauri app on each OS
+# and attaches the installers (.msi/.exe, .dmg, .AppImage/.deb) to a GitHub
+# Release. Installers are UNSIGNED — the release notes link the override steps.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    permissions:
+      contents: write          # needed to create the Release and upload assets
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: windows-latest   # -> .msi + .exe
+          - platform: macos-latest     # -> .dmg (Apple Silicon)
+          - platform: ubuntu-22.04     # -> .AppImage + .deb
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust (stable)
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "gui/src-tauri -> target"
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: gui/package-lock.json
+
+      - name: Install Linux system dependencies
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev libgtk-3-dev librsvg2-dev patchelf \
+            libayatana-appindicator3-dev
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: gui
+
+      - name: Build app + create release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: gui
+          tagName: ${{ github.ref_name }}
+          releaseName: "akribia ${{ github.ref_name }}"
+          releaseBody: |
+            Desktop installers for akribia.
+
+            **Installers are unsigned.** macOS: right-click the app → Open (or
+            `xattr -d com.apple.quarantine <file>`). Windows: "More info" → "Run
+            anyway" on the SmartScreen prompt.
+
+            akribia is a research/educational tool, not a diagnostic instrument.
+          releaseDraft: false
+          prerelease: false

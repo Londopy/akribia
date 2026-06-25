@@ -20,6 +20,35 @@
 > akribia runs entirely on **synthetic, simulated data**. It does not collect,
 > store, transmit, or process any personal, behavioral, or health information.
 
+## Desktop app — the interactive explorer
+
+akribia ships a rich, dark, **interactive desktop app** (Tauri + React + Tailwind):
+pick a profile in the sidebar, drag a precision lever, and watch every task's
+behaviour update **live** against the neurotypical baseline — all computed by the
+same validated Rust core, no Python required.
+
+**Install (no build needed):** grab the installer for your OS from the
+**[Releases page](https://github.com/Londopy/akribia/releases)** — `.msi`/`.exe`
+(Windows), `.dmg` (macOS), `.AppImage`/`.deb` (Linux). These are built
+automatically by GitHub Actions when a `v*` tag is pushed.
+
+> **Installers are unsigned.** Windows: click "More info" → "Run anyway" on the
+> SmartScreen prompt. macOS: right-click the app → Open (or
+> `xattr -d com.apple.quarantine <file>`).
+
+**Or build / run it yourself:**
+
+```bash
+cd gui
+npm install
+npm run tauri dev      # live dev window with hot reload
+npm run tauri build    # installer lands in gui/src-tauri/target/release/bundle/
+```
+
+Requires Node, a current stable Rust toolchain, and WebView2 (preinstalled on
+Windows 10/11). The Python research layer (below) stays available for notebooks,
+sweeps and validation.
+
 ## See the thesis demonstrated in ~90 seconds
 
 → **[`notebooks/00_golden_path.ipynb`](./notebooks/00_golden_path.ipynb)** — baseline
