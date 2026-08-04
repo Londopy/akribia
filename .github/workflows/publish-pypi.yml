@@ -27,8 +27,8 @@ jobs:
           - { runner: ubuntu-latest,  target: x86_64 }
           - { runner: windows-latest, target: x64 }
           - { runner: macos-14,       target: aarch64 }   # Apple Silicon
-          # macos-13 was retired 2025-12-04. macos-15-intel is the replacement
-          # and is the LAST x86_64 image GitHub Actions will offer (EOL Aug 2027).
+          # macos-13 was retired 2025-12-04. macos-15-intel replaces it and is the
+          # LAST x86_64 image GitHub Actions will offer (EOL Aug 2027).
           - { runner: macos-15-intel, target: x86_64 }    # Intel
     steps:
       - uses: actions/checkout@v4
@@ -39,11 +39,12 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.platform.target }}
-          # On Linux, build for every CPython the manylinux image provides;
-          # elsewhere build for the 3.11 set up above.
-          args: >-
-            --release --out dist
-            ${{ matrix.platform.runner == 'ubuntu-latest' && '--find-interpreter' || '' }}
+          # The core crate builds with pyo3's abi3-py311 feature, so ONE wheel per
+          # platform covers CPython 3.11+ and matches requires-python = ">=3.11".
+          # --find-interpreter is deliberately NOT used: it picked up CPython 3.13
+          # from the manylinux image, which pyo3 0.21 cannot build against, and that
+          # is what failed the Linux job with "docker failed with exit code 1".
+          args: --release --out dist
           manylinux: auto
       - uses: actions/upload-artifact@v4
         with:

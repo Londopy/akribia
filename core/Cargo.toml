@@ -19,7 +19,11 @@ rand_chacha = "0.3"          # explicit, seedable RNG — never ambient (spec 2.
 rand_distr = "0.4"           # Gaussian sampling for RPE / injury noise
 thiserror = "1.0"
 tracing = "0.1"              # structured logging across the boundary (spec 2.13)
-pyo3 = { version = "0.21", features = ["extension-module"], optional = true }
+# abi3-py311 matches pyproject's requires-python = ">=3.11" and produces ONE
+# wheel per platform valid for 3.11+, instead of a separate build per CPython.
+# This also removes the need for --find-interpreter in CI, which was picking up
+# CPython 3.13 in the manylinux image — a version pyo3 0.21 cannot build against.
+pyo3 = { version = "0.21", features = ["extension-module", "abi3-py311"], optional = true }
 
 [features]
 default = []

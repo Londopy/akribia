@@ -15,7 +15,7 @@ build-backend = "maturin"
 
 [project]
 name = "akribia"
-version = "0.1.0"
+version = "0.1.4"
 description = "A unified computational model of precision-weighted Bayesian inference across autism, ADHD, and PPCS."
 readme = "README.md"
 requires-python = ">=3.11"
