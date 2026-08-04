@@ -2,7 +2,7 @@ name: publish-pypi
 
 # Builds binary wheels for Linux + Windows + macOS (so `pip install akribia`
 # works with NO local Rust toolchain) plus an sdist, and uploads them all to
-# PyPI using a token stored as the PYPI_API_TOKEN repository secret.
+# PyPI via Trusted Publishing (OIDC) — no API token is stored anywhere.
 # Runs on a version tag (same tag that builds the desktop installers) or manually.
 on:
   push:
@@ -69,17 +69,23 @@ jobs:
     name: Publish to PyPI
     needs: [wheels, sdist]
     runs-on: ubuntu-latest
+    # Authenticates via PyPI Trusted Publishing (OIDC) — no API token, nothing to
+    # rotate or leak. The publisher is registered against this repo and this
+    # workflow filename at pypi.org/manage/project/akribia/settings/publishing/,
+    # so renaming this file will break publishing until the publisher is updated.
     # (Optional: create an "Environment: pypi" with a required reviewer in repo
-    # settings and add `environment: pypi` here for a manual approval gate.)
+    # settings and add `environment: pypi` here for a manual approval gate. If you
+    # do, the environment name must also be set on the PyPI publisher.)
+    permissions:
+      id-token: write        # required to mint the OIDC token
     steps:
       - uses: actions/download-artifact@v4
         with:
           path: dist
           merge-multiple: true
-      - name: Upload to PyPI
-        uses: PyO3/maturin-action@v1
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          command: upload
-          args: --non-interactive --skip-existing dist/*
-        env:
-          MATURIN_PYPI_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+          # 0.1.0 was uploaded manually before this workflow existed; without
+          # this the job fails on the pre-existing sdist rather than skipping it.
+          skip-existing: true
