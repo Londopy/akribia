@@ -13,14 +13,12 @@ from dataclasses import replace
 from pathlib import Path
 
 import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import SymLogNorm
 
 from akribia import core, profiles
 from akribia.tasks import (
-    delay_discounting_task as DD,
     illusion_task as IL,
     multi_task_battery as MB,
     perturbation_recovery_task as PR,
@@ -29,6 +27,10 @@ from akribia.tasks import (
 )
 from akribia.validation import parameter_recovery as PREC, sensitivity as SENS
 from akribia.viz.style import OKABE_ITO, profile_style
+
+# Headless rendering: set before any figure is created, after the import block
+# so the imports stay sorted.
+matplotlib.use("Agg")
 
 ROOT = Path(__file__).resolve().parent
 FIG = ROOT / "figures"
@@ -288,12 +290,12 @@ def fig_audhd():
     obs = [met[m]["observed_combined_delta"] for m in names]
     # normalise each metric by its predicted-additive value for a shared axis
     predn = [1.0, 1.0]
-    obsn = [o / p if p else 0 for o, p in zip(obs, pred)]
+    obsn = [o / p if p else 0 for o, p in zip(obs, pred, strict=True)]
     ax.bar(x - 0.19, predn, 0.36, label="predicted additive", color="lightgrey",
            edgecolor="black", lw=0.5)
     ax.bar(x + 0.19, obsn, 0.36, label="observed combined", color=OKABE_ITO["reddish_purple"],
            edgecolor="black", lw=0.5, hatch="//")
-    for xi, o in zip(x, obsn):
+    for xi, o in zip(x, obsn, strict=True):
         ax.text(xi + 0.19, o + 0.03, f"{o:.2f}×", ha="center", fontsize=7)
     ax.set_xticks(x)
     ax.set_xticklabels(["recovery\ntime", "recovery\njitter"], fontsize=8)
@@ -312,7 +314,7 @@ def fig_recovery():
     from akribia.seeding import derive_seed
     fig, axes = plt.subplots(1, 3, figsize=(6.8, 2.5))
     rng_specs = list(PREC.RECOVER_GRIDS)
-    for ax, name in zip(axes, rng_specs):
+    for ax, name in zip(axes, rng_specs, strict=True):
         grid = PREC.RECOVER_GRIDS[name]
         rng = np.random.default_rng(derive_seed("recovery", name))
         truths = rng.uniform(grid.min(), grid.max(), 20)
@@ -333,8 +335,9 @@ def fig_recovery():
                 color=OKABE_ITO["bluish_green"] if ok else OKABE_ITO["vermillion"],
                 alpha=0.85)
         verdict = "recovers" if ok else "weakly identified"
-        ax.set_title("%s\n$r$ = %.2f (%s)" % (name, r["correlation_true_recovered"], verdict),
-                     fontsize=8)
+        ax.set_title(
+            f"{name}\n$r$ = {r['correlation_true_recovered']:.2f} ({verdict})",
+            fontsize=8)
         ax.set_xlabel("ground truth", fontsize=8)
         ax.tick_params(labelsize=7)
     axes[0].set_ylabel("recovered", fontsize=8)
@@ -469,34 +472,35 @@ def table_predictions():
 
     rows = [
         ("P1", "Weak priors reduce illusion susceptibility",
-         "%.3f $<$ %.3f" % (m(IL, "autism_weak_prior", "illusion_score"),
-                            m(IL, "baseline", "illusion_score")),
+         f"{m(IL, 'autism_weak_prior', 'illusion_score'):.3f} $<$ "
+         f"{m(IL, 'baseline', 'illusion_score'):.3f}",
          m(IL, "autism_weak_prior", "illusion_score") < m(IL, "baseline", "illusion_score")),
 
         ("P2", "Inflexible precision does \\emph{not} reduce the static illusion score",
-         "%.3f $\\geq$ %.3f" % (m(IL, "autism_overfitting", "illusion_score"),
-                                m(IL, "baseline", "illusion_score")),
+         f"{m(IL, 'autism_overfitting', 'illusion_score'):.3f} $\\geq$ "
+         f"{m(IL, 'baseline', 'illusion_score'):.3f}",
          m(IL, "autism_overfitting", "illusion_score") >= m(IL, "baseline", "illusion_score") - 1e-9),
 
         ("P3", "Inflexible precision delays post-switch reconvergence",
-         "%.2f $>$ %.2f trials" % (m(VL, "autism_overfitting", "trials_to_reconverge"),
-                                   m(VL, "baseline", "trials_to_reconverge")),
+         f"{m(VL, 'autism_overfitting', 'trials_to_reconverge'):.2f} $>$ "
+         f"{m(VL, 'baseline', 'trials_to_reconverge'):.2f} trials",
          m(VL, "autism_overfitting", "trials_to_reconverge") > m(VL, "baseline", "trials_to_reconverge")),
 
         ("P4", "Steep discounting lowers the delay-discounting AUC",
-         "%.4f $<$ %.4f" % (m(DD, "adhd_discounting", "auc_impulsivity"),
-                            m(DD, "baseline", "auc_impulsivity")),
+         f"{m(DD, 'adhd_discounting', 'auc_impulsivity'):.4f} $<$ "
+         f"{m(DD, 'baseline', 'auc_impulsivity'):.4f}",
          m(DD, "adhd_discounting", "auc_impulsivity") < m(DD, "baseline", "auc_impulsivity")),
 
         ("P5", "Impaired forward model resolves the mismatch more slowly",
-         "%.2f $>$ %.2f steps" % (m(SM, "ppcs_forward_model", "recovery_steps_mean"),
-                                  m(SM, "baseline", "recovery_steps_mean")),
+         f"{m(SM, 'ppcs_forward_model', 'recovery_steps_mean'):.2f} $>$ "
+         f"{m(SM, 'baseline', 'recovery_steps_mean'):.2f} steps",
          m(SM, "ppcs_forward_model", "recovery_steps_mean") > m(SM, "baseline", "recovery_steps_mean")),
 
         ("P6", "AuDHD is both slower and more erratic than baseline",
-         "$t$ %.1f $>$ %.1f; $j$ %.3f $>$ %.3f" % (
-             audhd["recovery_time_mean"], base_p["recovery_time_mean"],
-             audhd["recovery_jitter_mean"], base_p["recovery_jitter_mean"]),
+         f"$t$ {audhd['recovery_time_mean']:.1f} $>$ "
+         f"{base_p['recovery_time_mean']:.1f}; "
+         f"$j$ {audhd['recovery_jitter_mean']:.3f} $>$ "
+         f"{base_p['recovery_jitter_mean']:.3f}",
          (audhd["recovery_time_mean"] > base_p["recovery_time_mean"]
           and audhd["recovery_jitter_mean"] > base_p["recovery_jitter_mean"]
           and autism_p["recovery_time_mean"] > base_p["recovery_time_mean"]
