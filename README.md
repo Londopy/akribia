@@ -1,6 +1,7 @@
 # akribia
 ### A unified computational model of precision-weighted Bayesian inference across autism, ADHD, and PPCS
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21783362.svg)](https://doi.org/10.5281/zenodo.21783362)
 [![ci](https://github.com/Londopy/akribia/actions/workflows/ci.yml/badge.svg)](https://github.com/Londopy/akribia/actions/workflows/ci.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
