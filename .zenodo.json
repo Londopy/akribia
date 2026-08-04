@@ -1,0 +1,28 @@
+{
+    "title": "akribia: a single-engine testbed for precision-weighted models of autism, ADHD, and persistent post-concussion symptoms",
+    "upload_type": "software",
+    "access_right": "open",
+    "license": "mit",
+    "language": "eng",
+    "creators": [
+        {
+            "name": "Chowdhury, London",
+            "orcid": "0009-0006-2895-2857",
+            "affiliation": "General Engineering Program, College of Engineering, California Polytechnic State University, San Luis Obispo"
+        }
+    ],
+    "description": "<p><strong>akribia</strong> is an open-source testbed in which a single precision-weighted Bayesian inference engine is parameterised by one six-field configuration object, so that autism, ADHD and persistent post-concussion symptoms (PPCS) are represented purely as different numbers passed to the same engine &mdash; there is no per-condition code path anywhere in the numerical core.</p><p>The package implements four numerical kernels (a precision-weighted Gaussian update, a volatility-coupled filter, an error-driven value update, and a sensorimotor forward model) in a Rust core exposed to Python through PyO3, with a pure-Python fallback so the package runs with or without a Rust toolchain. Five tasks &mdash; Kanizsa illusory contour, volatility learning across an unsignalled reversal, delay discounting, vestibular self-motion, and perturbation recovery &mdash; each emit a schema-conformant JSON result. Six literature-derived predictions are encoded as executable assertions in the test suite, and parameter recovery is reported per parameter rather than as a single accuracy figure.</p><p><strong>This is not a diagnostic tool.</strong> akribia is a computational-psychiatry research and replication tool. It implements published mathematical models to illustrate theoretical mechanisms proposed in the literature. It has not been validated against patient data and must not be used to assess, screen, or characterise any individual. It runs entirely on synthetic, simulated data and collects no personal, behavioural or health information. The autism precision-weighting literature in particular is actively contested; this project models competing hypotheses, not settled fact.</p>",
+    "keywords": [
+        "computational psychiatry",
+        "predictive coding",
+        "Bayesian inference",
+        "precision weighting",
+        "autism",
+        "ADHD",
+        "post-concussion syndrome",
+        "hierarchical Gaussian filter",
+        "reinforcement learning",
+        "Rust",
+        "Python"
+    ]
+}

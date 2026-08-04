@@ -1,22 +1,37 @@
 cff-version: 1.2.0
-title: akribia
+title: >-
+  akribia: a single-engine testbed for precision-weighted models of autism,
+  ADHD, and persistent post-concussion symptoms
 message: "If you use this software, please cite it as below."
-authors:
-  - alias: "Londopy"
 type: software
+authors:
+  - given-names: London
+    family-names: Chowdhury
+    orcid: "https://orcid.org/0009-0006-2895-2857"
+    email: Londopy@protonmail.com
+    affiliation: >-
+      General Engineering Program, College of Engineering, California
+      Polytechnic State University, San Luis Obispo
 license: MIT
 repository-code: "https://github.com/Londopy/akribia"
+url: "https://londopy.github.io/akribia/"
 abstract: >-
-  A unified computational model of precision-weighted Bayesian inference across
-  autism, ADHD, and PPCS. One predictive-coding engine with pluggable precision
-  miscalibration profiles, plus a literature-grounded comorbidity (AuDHD) mode.
-  A research/replication tool, not a diagnostic instrument.
+  An open-source testbed in which a single precision-weighted Bayesian
+  inference engine is parameterised by one six-field configuration object, so
+  that autism, ADHD and persistent post-concussion symptoms are represented
+  purely as different numbers passed to the same engine, with no per-condition
+  code path in the numerical core. Ships a Rust core with a pure-Python
+  fallback, five discriminating tasks, and six literature-derived predictions
+  encoded as executable assertions. A research and replication tool, not a
+  diagnostic instrument; it runs entirely on synthetic data and has not been
+  validated against patient data.
 keywords:
   - computational-psychiatry
   - predictive-coding
   - bayesian-inference
+  - precision-weighting
   - autism
   - adhd
   - post-concussion-syndrome
-version: 0.1.0
-date-released: "2026-06-24"
+version: 0.1.3
+date-released: "2026-07-25"
