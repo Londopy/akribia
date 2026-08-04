@@ -10,7 +10,7 @@ never one global accuracy number.
 |---|---|---|
 | `discount_factor` | ✅ reliably | ≈ 1.0 |
 | `prior_precision_cap` | ✅ reliably | ≈ 1.0 |
-| `precision_flexibility` | ⚠️ weakly identified | ≈ 0.44 |
+| `precision_flexibility` | ⚠️ weakly identified | ≈ 0.52 |
 
 The CI gate (`validation.yml`) passes only on the reliably-recoverable parameters,
 so it tracks something real. A weakly-identified parameter is exactly what the

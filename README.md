@@ -152,7 +152,7 @@ same checks CI runs.
 
 - **Per-parameter recovery** ([docs/LIMITATIONS.md](./docs/LIMITATIONS.md)):
   `discount_factor` and `prior_precision_cap` recover cleanly (corr ≈ 1.0);
-  `precision_flexibility` is **weakly identified** (corr ≈ 0.44) and reported as
+  `precision_flexibility` is **weakly identified** (corr ≈ 0.52) and reported as
   such. The CI gate is defined only on the reliably-recoverable parameters.
 - **Two independent core implementations** (Rust + Python) agree to ~1e-16.
 - **Performance** ([docs/BENCHMARKS.md](./docs/BENCHMARKS.md)): the boundary-free

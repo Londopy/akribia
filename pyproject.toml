@@ -86,6 +86,12 @@ extend-exclude = ["gui", "notebooks"]
 select = ["E", "F", "I", "B", "UP", "NPY", "RUF"]
 ignore = ["E501", "E702", "RUF001", "RUF002", "RUF003", "UP017"]  # E501/E702 style; RUF00x allow scientific unicode (γ, −); UP017 keep tz.utc for 3.10 fallback
 
+[tool.ruff.lint.isort]
+# Allow several aliased imports from one module to share a single
+# parenthesised statement (e.g. the task modules in paper/make_figures.py)
+# instead of forcing one line per alias.
+combine-as-imports = true
+
 [tool.mypy]
 python_version = "3.11"
 warn_unused_ignores = true

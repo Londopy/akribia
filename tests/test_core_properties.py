@@ -4,8 +4,7 @@ Mirror the Rust ``proptest`` invariants on the Python side with ``hypothesis``:
 they validate that the implementation is internally consistent regardless of what
 it is compared against, separate from the parameter-recovery validation.
 """
-from hypothesis import given, settings
-from hypothesis import strategies as st
+from hypothesis import given, settings, strategies as st
 
 from akribia import core
 

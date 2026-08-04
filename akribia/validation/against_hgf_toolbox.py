@@ -64,8 +64,7 @@ def compare_backends(tol: float = TOLERANCE) -> dict:
     filters. Skips gracefully (reports ``backend='python'``) when the compiled
     extension is not installed — the Python fallback is then checked against the
     independent NumPy oracle instead."""
-    from .. import _core_fallback as ref
-    from .. import core
+    from .. import _core_fallback as ref, core
 
     obs = np.sin(np.linspace(0, 12, 200)).tolist()
     results = {"active_backend": core.BACKEND, "tolerance": tol, "checks": []}

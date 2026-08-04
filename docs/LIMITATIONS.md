@@ -29,7 +29,7 @@ who knows the literature.
 - **Per-parameter recovery, honestly reported (spec 2.6).** `discount_factor` and
   `prior_precision_cap` recover cleanly (correlation ≈ 1.0 between ground-truth and
   recovered values). **`precision_flexibility` is weakly identified** (correlation
-  ≈ 0.44) — it trades off against the task design and does not recover reliably.
+  ≈ 0.52, mean relative error 0.42) — it trades off against the task design and does not recover reliably.
   This is reported as a recovery *table*, not a single headline accuracy number,
   and the CI gate is defined *only* on the parameters that recover reliably. A
   weakly-identified parameter is exactly what the sensitivity sweep predicts:
