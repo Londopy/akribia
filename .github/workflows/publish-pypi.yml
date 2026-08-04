@@ -27,7 +27,9 @@ jobs:
           - { runner: ubuntu-latest,  target: x86_64 }
           - { runner: windows-latest, target: x64 }
           - { runner: macos-14,       target: aarch64 }   # Apple Silicon
-          - { runner: macos-13,       target: x86_64 }    # Intel
+          # macos-13 was retired 2025-12-04. macos-15-intel is the replacement
+          # and is the LAST x86_64 image GitHub Actions will offer (EOL Aug 2027).
+          - { runner: macos-15-intel, target: x86_64 }    # Intel
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

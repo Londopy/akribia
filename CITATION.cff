@@ -12,6 +12,14 @@ authors:
     affiliation: >-
       General Engineering Program, College of Engineering, California
       Polytechnic State University, San Luis Obispo
+doi: "10.5281/zenodo.21783361"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.21783361"
+    description: Concept DOI — always resolves to the latest release.
+  - type: doi
+    value: "10.5281/zenodo.21783362"
+    description: DOI for version v0.1.3.
 license: MIT
 repository-code: "https://github.com/Londopy/akribia"
 url: "https://londopy.github.io/akribia/"
