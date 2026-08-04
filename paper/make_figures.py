@@ -18,14 +18,13 @@ import numpy as np
 from matplotlib.colors import SymLogNorm
 
 from akribia import core, profiles
-from akribia.tasks import (
-    illusion_task as IL,
-    multi_task_battery as MB,
-    perturbation_recovery_task as PR,
-    self_motion_task as SM,
-    volatility_learning_task as VL,
-)
-from akribia.validation import parameter_recovery as PREC, sensitivity as SENS
+from akribia.tasks import illusion_task as IL
+from akribia.tasks import multi_task_battery as MB
+from akribia.tasks import perturbation_recovery_task as PR
+from akribia.tasks import self_motion_task as SM
+from akribia.tasks import volatility_learning_task as VL
+from akribia.validation import parameter_recovery as PREC
+from akribia.validation import sensitivity as SENS
 from akribia.viz.style import OKABE_ITO, profile_style
 
 # Headless rendering: set before any figure is created, after the import block
