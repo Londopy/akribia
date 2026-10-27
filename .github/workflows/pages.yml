@@ -1,7 +1,7 @@
 name: pages
 
 # Deploys the frontend as a live, zero-install demo to GitHub Pages
-# (https://londopy.github.io/akribia/). In the browser the app runs its built-in
+# (https://londo.me/akribia/). In the browser the app runs its built-in
 # TypeScript engine fallback — the same equations as the Rust core — so the full
 # dashboard works with no backend.
 on:

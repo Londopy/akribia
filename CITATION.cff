@@ -22,7 +22,7 @@ identifiers:
     description: DOI for version v0.1.3.
 license: MIT
 repository-code: "https://github.com/Londopy/akribia"
-url: "https://londopy.github.io/akribia/"
+url: "https://londo.me/akribia/"
 abstract: >-
   An open-source testbed in which a single precision-weighted Bayesian
   inference engine is parameterised by one six-field configuration object, so
